@@ -10,12 +10,13 @@ func (c *Chip8) DrawDisplay() *Chip8 {
 	chip8Height := len(c.Gfx)
 	chip8Width := len(c.Gfx[0])
 
-	pixelSize := int(c.PixelSize)
+	pixelWidth := int(c.PixelWidth)
+	pixelHeight := int(c.PixelHeight)
 
 	for y := 0; y < chip8Height; y++ {
 		for x:= 0; x < chip8Width; x++ {
-			if c.Gfx[y][x] != 0 {
-				r1.DrawRectangle(int32(x*pixelSize), int32(y*pixelSize), int32(pixelSize), int32(pixelSize), r1.White)
+			if c.Gfx[y][x] {
+				r1.DrawRectangle(int32(x * c.Scale), int32(y * c.Scale), int32(pixelWidth), int32(pixelHeight), r1.White)
 			}
 		}
 	}

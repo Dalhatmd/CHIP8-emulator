@@ -2,7 +2,6 @@ package main
 
 import (
 	"CHIP8/Chip8"
-	"fmt"
 	r1 "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -12,11 +11,12 @@ import (
 
 func main() {
 	chip8 := Chip8.GetChip8()
+	chip8.Initialise()
+	chip8.FetchOpcode()
+	screenWidth := 64 * int(chip8.PixelWidth)
+	screenHeight := 32 * int(chip8.PixelHeight)
 
-	screenWidth := 64 * int(chip8.PixelSize)
-	screenHeight := 32 * int(chip8.PixelSize)
-
-	r1.InitWindow(int32(screenWidth), int32(screenHeight), "Md's Chip8 Emulator")
+	r1.InitWindow(int32(screenWidth * chip8.Scale), int32(screenHeight * chip8.Scale), "Md's Chip8 Emulator")
 	r1.SetTargetFPS(60)
 
 	for !r1.WindowShouldClose() {

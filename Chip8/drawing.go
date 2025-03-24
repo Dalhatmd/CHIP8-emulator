@@ -22,3 +22,11 @@ func (c *Chip8) DrawDisplay() *Chip8 {
 	}
 	return c
 }
+
+func (c *Chip8) ClearDiplay() {
+	for y:= range c.Gfx {
+		for x := range c.Gfx[y] {
+			c.Gfx[y][x] = false
+		}
+	}
+}

@@ -23,12 +23,15 @@ type Chip8 struct {
 	PixelHeight uint16
 	Scale int
 }
-
+// New initializes a new Chip8 instance with default values.
+// The program counter starts at 0x200, and the font set is loaded into memory starting at 0x050.
+// The pixel dimensions are set to the default character size of 4x5 pixels.
 func New() *Chip8 {
 	c := &Chip8{
 		Pc: programStartAddress, // Program counter starts at 0x200
 		PixelWidth: charPixelWidth, // Default pixel PixelWidth
 		PixelHeight: charPixelHeight, // Default pixel PixelHeight
+		Scale: 2, // Default scale factor
 	}
 
 	for i, v := range fontset {
@@ -38,11 +41,6 @@ func New() *Chip8 {
 	return c
 }
 
-//
-// Initialises Chip 8
-// 1: Copies fontdata to memory
-// 2: set program counter to start of program space (ox200)
-//
 
 var fontset = []byte {
 	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -62,5 +60,3 @@ var fontset = []byte {
 	0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 	0xF0, 0x80, 0xF0, 0x80, 0x80,  // F
 }
-
-

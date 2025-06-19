@@ -7,11 +7,8 @@ import (
 
 func (c *Chip8) DrawDisplay() *Chip8 {
 
-	chip8Height := len(c.Gfx)
-	chip8Width := len(c.Gfx[0])
-
-	for y := 0; y < chip8Height/4; y++ {
-		for x:= 0; x < chip8Width/4; x++ {
+	for y := range c.Gfx { 
+		for x:= range c.Gfx[y] {
 			if c.Gfx[y][x] {
 				drawX := int32(x)
 				drawY := int32(y)

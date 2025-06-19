@@ -4,7 +4,7 @@ import (
 )
 
 func testFetchOpcode(t *testing.T) {
-chip := New()
+	chip := New()
 
 	chip.Memory[0x200] = 0x12
 	chip.Memory[0x201] = 0x34

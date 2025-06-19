@@ -8,20 +8,20 @@ const (
 )
 
 type Chip8 struct {
-	Opcode uint16
-	Memory [4096]byte
-	V [16]uint8
-	I uint16
-	Pc uint16
-	Gfx [32][64]bool
-	DelayTimer uint8
-	SoundTimer uint8
-	Stack [16]uint16
-	Sp uint16
-	Key [16]uint8
-	PixelWidth uint16
-	PixelHeight uint16
-	Scale int
+	Opcode uint16  //current instructioon being executed
+	Memory [4096]byte //array representating Memory
+	V [16]uint8 //flag for certain operations
+	I uint16  //register for storing sprites or data
+	Pc uint16  //points to the current instruction in memory
+	Gfx [32][64]bool  //2d array repr monochrome display. each value either 0 or 1
+	DelayTimer uint8 //8-bit timer that decrements at 60hz
+	SoundTimer uint8 //8-bit timer that plays a sound when non-zero
+	Stack [16]uint16 //array used to store return addresses for subroutines
+	Sp uint16 //stack pointer; points to top of stack
+	Key [16]uint8  //16 bit values representing the chip8 keypad
+	PixelWidth uint16 //width of a single pixel. Value used in drawing
+	PixelHeight uint16  //height of a single pixel. Value used in drawing
+	Scale int  //Scaling factor for rendering display
 }
 // New initializes a new Chip8 instance with default values.
 // The program counter starts at 0x200, and the font set is loaded into memory starting at 0x050.
@@ -31,7 +31,7 @@ func New() *Chip8 {
 		Pc: programStartAddress, // Program counter starts at 0x200
 		PixelWidth: charPixelWidth, // Default pixel PixelWidth
 		PixelHeight: charPixelHeight, // Default pixel PixelHeight
-		Scale: 2, // Default scale factor
+		Scale: 2, // Default scale factor for display
 	}
 
 	for i, v := range fontset {

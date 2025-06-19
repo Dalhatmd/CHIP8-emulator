@@ -23,6 +23,14 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		address := opcode & 0x0FFF
 		fmt.Printf("Jumping to address: 0x%X\n", address)
 		c.Pc = address
+	case 0x00EE:
+		c.Pc = c.Stack[c.Sp]
+		c.Sp--
+	case 0x2000:
+		c.Stack[c.Sp] = c.Pc	
+		c.Sp++
+		address := opcode & 0x0FFF
+		c.Pc = address
 	}
 }
 

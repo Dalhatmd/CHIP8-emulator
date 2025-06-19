@@ -11,8 +11,7 @@ import (
 */
 
 func main() {
-	chip8 := Chip8.GetChip8()
-	chip8.Initialise()
+	chip8 := Chip8.New()
 //	chip8.FetchOpcode()
 	screenWidth := 64 * int(chip8.PixelWidth)
 	screenHeight := 32 * int(chip8.PixelHeight)

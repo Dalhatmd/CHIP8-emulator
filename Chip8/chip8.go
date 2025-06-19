@@ -1,5 +1,12 @@
 package Chip8
 
+const (
+	programStartAddress = 0x200 
+	fontMemoryAddress = 0x050 	
+	charPixelWidth = 4 
+	charPixelHeight = 5 
+)
+
 type Chip8 struct {
 	Opcode uint16
 	Memory [4096]byte
@@ -7,8 +14,8 @@ type Chip8 struct {
 	I uint16
 	Pc uint16
 	Gfx [32][64]bool
-	Delay_timer uint8
-	Sound_timer uint8
+	DelayTimer uint8
+	SoundTimer uint8
 	Stack [16]uint16
 	Sp uint16
 	Key [16]uint8
@@ -17,18 +24,27 @@ type Chip8 struct {
 	Scale int
 }
 
-func GetChip8() *Chip8 {
-	return &Chip8{}
+func New() *Chip8 {
+	c := &Chip8{
+		Pc: programStartAddress, // Program counter starts at 0x200
+		PixelWidth: charPixelWidth, // Default pixel PixelWidth
+		PixelHeight: charPixelHeight, // Default pixel PixelHeight
+	}
+
+	for i, v := range fontset {
+		c.Memory[fontMemoryAddress+i] = v 	
+	}
+
+	return c
 }
 
-/**
-* Initialises Chip 8
-* 1: Copies fontdata to memory
-* 2: set program counter to start of program space (ox200)
-*/
-func (c *Chip8) Initialise () {
+//
+// Initialises Chip 8
+// 1: Copies fontdata to memory
+// 2: set program counter to start of program space (ox200)
+//
 
-	fontset :=[]byte {
+var fontset = []byte {
 	0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 	0x20, 0x60, 0x20, 0x20, 0x70, // 1
 	0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -47,11 +63,4 @@ func (c *Chip8) Initialise () {
 	0xF0, 0x80, 0xF0, 0x80, 0x80,  // F
 }
 
-	for i, v := range fontset {
-		c.Memory[0x050+i] = v
-	}
-	c.Pc = 0x200
-	c.PixelWidth = 4
-	c.PixelHeight = 5
-	c.Scale = 4
-}
+

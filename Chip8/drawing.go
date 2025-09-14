@@ -28,4 +28,4 @@ func (c *Chip8) ClearDisplay() {
 	}
 }
 
-func drawRectangle
+//func drawRectangle

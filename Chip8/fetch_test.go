@@ -3,7 +3,7 @@ import (
 	"testing"
 )
 
-func testFetchOpcode(t *testing.T) {
+func TestFetchOpcode(t *testing.T) { // Was testFetchOpcode - needed capital T
 	chip := New()
 
 	chip.Memory[0x200] = 0x12

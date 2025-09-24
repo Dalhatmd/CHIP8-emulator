@@ -32,7 +32,7 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		c.Pc = address
 
 	case 0x2000: // CALL addr
-		c.Stack[c.Sp] = c.Pc	
+		c.Stack[c.Sp] = c.Pc
 		c.Sp++
 		address := opcode & 0x0FFF
 		c.Pc = address
@@ -47,7 +47,7 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 	case 0x6000: // LD Vx, byte
 		x := (opcode & 0x0F00) >> 8
 		nn := opcode & 0x00ff
-		c.V[x] += uint8(nn)
+		c.V[x] = uint8(nn)
 
 	case 0x7000: // ADD Vx, byte
 		x := (opcode & 0x0F00) >> 8
@@ -62,5 +62,69 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		y := (opcode & 0x00F0) >> 4
 		n := opcode & 0x000F
 		fmt.Printf("Drawing sprite v[%x]=%d, V[%X]=[%d], height=%d\n", x, c.V[x], y, c.V[y], n)
+		// reset collision flag
+		c.V[0xF] = 0
+		// Get sprite coordinates
+		xPos := c.V[x]
+		yPos := c.V[y]
+
+		// Draw sprite line by line
+		for row := uint16(0); row < n; row++ {
+			spriteByte := c.Memory[c.I+row]
+			for col := uint16(0); col < 8; col++ {
+				// Check if the current bit in the sprite byte is set
+				if (spriteByte & (0x80 >> col)) != 0 {
+					screenX := (xPos + uint8(col)) % 64
+					screenY := (yPos + uint8(row)) % 32
+
+					// Check for collision and draw pixel using XOR
+					if c.Gfx[screenY][screenX] { // If pixel was already ON
+						c.V[0xF] = 1 // Set collision flag
+					}
+					c.Gfx[screenY][screenX] = !c.Gfx[screenY][screenX] // XOR operation
+				}
+			}
+		}
+
+	// More op
+	case 0xE000: // EX9E, EXA1
+		x := (opcode & 0x0F00) >> 8
+		switch opcode & 0x00FF {
+		case 0x009E: // EX9E - SKP Vx
+			if c.Key[c.V[x]] != 0 {
+				c.Pc += 2
+			}
+		case 0x00A1: // EXA1 - SKNP Vx
+			if c.Key[c.V[x]] == 0 {
+				c.Pc += 2
+			}
+		}
+	case 0xF000:
+		x := (opcode & 0x0F00) >> 8
+		switch opcode & 0x00FF {
+		case 0x0015: // FX15 - LD DT, Vx
+			c.DelayTimer = c.V[x]
+		case 0x0018: // FX18 - LD ST, Vx
+			c.SoundTimer = c.V[x]
+		case 0x001E: // FX1E - ADD I, Vx
+			c.I += uint16(c.V[x])
+		case 0x0029: // FX29 - LD F, Vx
+			c.I = uint16(0x50 + (c.V[x] * 5)) // Each font character is 5 bytes long, starting at memory location 0x50
+		case 0x0033: // FX33 - LD B, Vx
+			value := c.V[x]
+			c.Memory[c.I] = value / 100
+			c.Memory[c.I+1] = (value / 10) % 10
+			c.Memory[c.I+2] = value % 10
+		case 0x0055: // FX55 - LD [I], Vx
+			for i := uint16(0); i <= x; i++ {
+				c.Memory[c.I+i] = c.V[i]
+			}
+		case 0x0065: // FX65 - LD Vx, [I]
+			for i := uint16(0); i <= x; i++ {
+				c.V[i] = c.Memory[c.I+i]
+			}
+		}
+	default:
+		fmt.Printf("Unknown opcode: 0x%X\n", opcode)
 	}
 }

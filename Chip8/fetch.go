@@ -28,7 +28,7 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		}
 	case 0x1000: // JP addr
 		address := opcode & 0x0FFF
-		fmt.Printf("Jumping to address: 0x%X\n", address)
+//		fmt.Printf("Jumping to address: 0x%X\n", address)
 		c.Pc = address
 
 	case 0x2000: // CALL addr
@@ -72,7 +72,6 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		for row := uint16(0); row < n; row++ {
 			spriteByte := c.Memory[c.I+row]
 			for col := uint16(0); col < 8; col++ {
-				// Check if the current bit in the sprite byte is set
 				if (spriteByte & (0x80 >> col)) != 0 {
 					screenX := (xPos + uint8(col)) % 64
 					screenY := (yPos + uint8(row)) % 32
@@ -86,16 +85,15 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 			}
 		}
 
-	// More op
 	case 0xE000: // EX9E, EXA1
 		x := (opcode & 0x0F00) >> 8
 		switch opcode & 0x00FF {
 		case 0x009E: // EX9E - SKP Vx
-			if c.Key[c.V[x]] != 0 {
+			if c.Key[c.V[x]] {
 				c.Pc += 2
 			}
 		case 0x00A1: // EXA1 - SKNP Vx
-			if c.Key[c.V[x]] == 0 {
+			if !c.Key[c.V[x]] {
 				c.Pc += 2
 			}
 		}

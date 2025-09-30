@@ -18,7 +18,7 @@ type Chip8 struct {
 	SoundTimer  uint8        //8-bit timer that plays a sound when non-zero
 	Stack       [16]uint16   //array used to store return addresses for subroutines
 	Sp          uint16       //stack pointer; points to top of stack
-	Key         [16]uint8    //16 bit values representing the chip8 keypad
+	Key         [16]bool    //16 bit values representing the chip8 keypad
 	PixelWidth  uint16       //width of a single pixel. Value used in drawing
 	PixelHeight uint16       //height of a single pixel. Value used in drawing
 	Scale       int          //Scaling factor for rendering display

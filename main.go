@@ -4,7 +4,6 @@ import (
 	"CHIP8/Chip8"
 	"fmt"
 	"os"
-
 	r1 "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -14,7 +13,6 @@ import (
 
 func main() {
 	chip8 := Chip8.New()
-
 	// Load a ROM file
 	var romPath string
 	if len(os.Args) > 1 {
@@ -41,9 +39,9 @@ func main() {
 	for !r1.WindowShouldClose() {
 		opcode := chip8.FetchOpcode()
 		chip8.ExecuteOpcode(opcode)
-
+		chip8.HandleInput()
 		chip8.UpdateTimers()
-
+		fmt.Println(chip8.Key)
 		r1.BeginDrawing()
 		r1.ClearBackground(r1.Black)
 		chip8.DrawDisplay()

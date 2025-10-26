@@ -69,7 +69,7 @@ func (c *Chip8) LoadRom(rom []byte) {
 	}
 }
 
-// update timers
+// UpdateTimers
 func (c *Chip8) UpdateTimers() {
 	if c.DelayTimer > 0 {
 		c.DelayTimer--

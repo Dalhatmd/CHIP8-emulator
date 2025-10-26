@@ -85,7 +85,7 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		x := (opcode & 0x0F00) >> 8
 		y := (opcode & 0x00F0) >> 4
 		n := opcode & 0x000F
-		fmt.Printf("Drawing sprite v[%x]=%d, V[%X]=[%d], height=%d\n", x, c.V[x], y, c.V[y], n)
+//		fmt.Printf("Drawing sprite v[%x]=%d, V[%X]=[%d], height=%d\n", x, c.V[x], y, c.V[y], n)
 		// reset collision flag
 		c.V[0xF] = 0
 		// Get sprite coordinates

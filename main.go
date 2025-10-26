@@ -37,12 +37,12 @@ func main() {
 	r1.SetTargetFPS(60)
 
 	for !r1.WindowShouldClose() {
-		opcode := chip8.FetchOpcode()
-		chip8.ExecuteOpcode(opcode)
-		fmt.Println("executing opcode: ", opcode)
+		for i:= 0; i < 10; i++ {
+			opcode := chip8.FetchOpcode()
+			chip8.ExecuteOpcode(opcode)
+		}
 		chip8.HandleInput()
 		chip8.UpdateTimers()
-		fmt.Println(chip8.Key)
 		r1.BeginDrawing()
 		r1.ClearBackground(r1.Black)
 		chip8.DrawDisplay()

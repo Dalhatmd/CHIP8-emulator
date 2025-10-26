@@ -2,6 +2,7 @@ package Chip8
 
 import (
 	"fmt"
+	"math/rand"
 )
 
 /**
@@ -80,6 +81,11 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 
 	case 0xA000: // LD I, addr
 		c.I = opcode & 0x0FFF
+
+	case 0xC000: // CXNN - RND Vx, byte
+		x := (opcode & 0x0F00) >> 8
+		nn := byte(opcode & 0x00FF)
+		c.V[x] = byte(rand.Intn(256)) & nn
 
 	case 0xD000:
 		x := (opcode & 0x0F00) >> 8

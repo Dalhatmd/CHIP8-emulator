@@ -43,6 +43,21 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		if c.V[x] == value {
 			c.Pc += 2
 		}
+	case 0x4000: // Skip if VX != NN
+		x := (opcode & 0x0F00) >> 8
+		value := byte(opcode & 0x00FF)
+		if c.V[x] != value {
+			c.Pc += 2
+		}
+	
+	case 0x5000: // Skip if VX == VY
+		x := (opcode & 0x0F00) >> 8
+		y := (opcode & 0x00F0) >> 4
+		if opcode & 0x000F == 0 {
+			if c.V[x] == c.V[y] {
+				c.Pc+= 2
+			}
+		}
 
 	case 0x6000: // LD Vx, byte
 		x := (opcode & 0x0F00) >> 8
@@ -53,6 +68,15 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 		x := (opcode & 0x0F00) >> 8
 		nn := opcode & 0x00FF
 		c.V[x] += uint8(nn)
+	
+	case 0x9000:
+		x := (opcode & 0x0F00) >> 8
+		y := (opcode & 0x00F0) >> 4
+		if opcode & 0x000F == 0 {
+			if c.V[x] != c.V[y] {
+				c.Pc += 2
+			}
+		}
 
 	case 0xA000: // LD I, addr
 		c.I = opcode & 0x0FFF
@@ -97,6 +121,51 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 				c.Pc += 2
 			}
 		}
+	case 0x8000:
+			x := (opcode & 0x0F00) >> 8
+			y := (opcode & 0x00F0) >> 4
+			n := opcode & 0x000F
+
+			switch n{
+				case 0x0:
+					c.V[x] = c.V[y]
+				case 0x1:
+					c.V[x] |= c.V[y]
+				case 0x2:
+					c.V[x] &= c.V[y]
+				case 0x3:
+					c.V[x] ^= c.V[y]
+				case 0x4:
+					sum := uint16(c.V[x]) + uint16(c.V[y])
+					if sum > 0xFF {
+						c.V[0xF] = 1
+					} else {
+						c.V[0xF] = 0
+					}
+					c.V[x] = byte(sum)
+				case 0x5:
+					if c.V[x] > c.V[y] {
+						c.V[0xF] = 1
+					} else {
+						c.V[0xF] = 0
+					}
+					c.V[x] -= c.V[y]
+				case 0x6:
+					lsb := c.V[x] & 0x01
+					c.V[x] >>= 1
+					c.V[0xF] = lsb
+				case 0x7:
+					if c.V[y] >= c.V[x] {
+						c.V[0xF] = 1
+					} else {
+						c.V[0xF] = 0
+					}
+					c.V[x] = c.V[y] - c.V[x]
+				case 0xE:
+					c.V[0xF] = (c.V[x] & 0x80) >> 7
+					c.V[x] <<= 1
+			}
+			
 	case 0xF000:
 		x := (opcode & 0x0F00) >> 8
 		switch opcode & 0x00FF {
@@ -121,6 +190,10 @@ func (c *Chip8) ExecuteOpcode(opcode uint16) {
 			for i := uint16(0); i <= x; i++ {
 				c.V[i] = c.Memory[c.I+i]
 			}
+		case 0x0007:
+			c.V[x] = c.DelayTimer	
+
+
 		}
 	default:
 		fmt.Printf("Unknown opcode: 0x%X\n", opcode)

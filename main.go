@@ -39,6 +39,7 @@ func main() {
 	for !r1.WindowShouldClose() {
 		opcode := chip8.FetchOpcode()
 		chip8.ExecuteOpcode(opcode)
+		fmt.Println("executing opcode: ", opcode)
 		chip8.HandleInput()
 		chip8.UpdateTimers()
 		fmt.Println(chip8.Key)
